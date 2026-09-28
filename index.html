@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🥊 Hüseyin'i Patakla Deluxe (Sinir & Stres Atma Edition)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      background: #1a0f0d;
+      background-image: 
+        radial-gradient(#3a1b14 20%, transparent 20%),
+        radial-gradient(#26100b 20%, transparent 20%);
+      background-size: 26px 26px;
+      background-position: 0 0, 13px 13px;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      font-family: 'VT323', monospace;
+      color: #fed391;
+    }
+    .game-box {
+      background: #fed391;
+      border: 6px solid #8e2b0e;
+      border-radius: 18px;
+      box-shadow: inset 0 0 0 4px #e59952, 0 14px 35px rgba(0,0,0,0.7);
+      max-width: 450px;
+      width: 100%;
+      padding: 20px 16px;
+      text-align: center;
+      position: relative;
+    }
+    .header-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 13px;
+      color: #8e2b0e;
+      margin-bottom: 6px;
+      line-height: 1.4;
+      text-shadow: 1px 1px 0 #fff;
+    }
+    .sub-title {
+      font-size: 18px;
+      color: #5c2009;
+      margin-bottom: 12px;
+    }
+
+    /* HP & CAN BARI */
+    .hp-container {
+      background: #2b1108;
+      border: 3px solid #8e2b0e;
+      border-radius: 8px;
+      padding: 6px 10px;
+      margin-bottom: 14px;
+      position: relative;
+    }
+    .hp-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 18px;
+      color: #fff4d4;
+      margin-bottom: 4px;
+    }
+    .hp-bar-bg {
+      background: #47190d;
+      border-radius: 6px;
+      height: 20px;
+      width: 100%;
+      overflow: hidden;
+      border: 1px solid #000;
+    }
+    .hp-bar-fill {
+      background: linear-gradient(90deg, #ff4757, #2ed573);
+      height: 100%;
+      width: 100%;
+      transition: width 0.15s ease-out, background 0.3s;
+    }
+
+    /* SİLAH SEÇİMİ */
+    .weapon-title {
+      font-size: 16px;
+      color: #6d240b;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .weapon-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+    .weapon-btn {
+      background: #f7bc74;
+      border: 3px solid #8e2b0e;
+      border-radius: 8px;
+      padding: 6px 4px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .weapon-btn:hover {
+      background: #ffe3b3;
+      transform: translateY(-2px);
+    }
+    .weapon-btn.active {
+      background: #8e2b0e;
+      color: #fff4d4;
+      border-color: #3f1103;
+      box-shadow: 0 0 8px rgba(142, 43, 14, 0.6);
+      transform: scale(1.05);
+    }
+    .weapon-icon {
+      font-size: 24px;
+    }
+    .weapon-name {
+      font-size: 13px;
+      margin-top: 2px;
+      line-height: 1;
+    }
+
+    /* RİNG / ARENA (KARE FOTOĞRAF) */
+    .arena {
+      position: relative;
+      width: 250px;
+      height: 250px;
+      margin: 0 auto 14px auto;
+      background: #fff4d4;
+      border: 5px solid #8e2b0e;
+      border-radius: 14px;
+      box-shadow: inset 0 0 16px rgba(142, 43, 14, 0.4);
+      cursor: pointer;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .avatar-wrapper {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transition: filter 0.2s ease;
+    }
+    .avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+      display: block;
+      transition: filter 0.3s;
+    }
+
+    /* SARSILMA & HASAR ANİMASYONLARI */
+    .shake-hard {
+      animation: shakeHardAnim 0.18s cubic-bezier(.36,.07,.19,.97) both;
+    }
+    @keyframes shakeHardAnim {
+      10%, 90% { transform: translate3d(-6px, -2px, 0) rotate(-6deg); }
+      20%, 80% { transform: translate3d(8px, 4px, 0) rotate(7deg); }
+      30%, 50%, 70% { transform: translate3d(-10px, -4px, 0) rotate(-9deg); }
+      40%, 60% { transform: translate3d(10px, 3px, 0) rotate(8deg); }
+    }
+
+    .hit-mark {
+      position: absolute;
+      pointer-events: none;
+      font-size: 34px;
+      transform: translate(-50%, -50%);
+      animation: splash 0.5s ease-out forwards;
+      z-index: 20;
+    }
+    @keyframes splash {
+      0% { transform: translate(-50%, -50%) scale(0.4) rotate(0deg); opacity: 1; }
+      50% { transform: translate(-50%, -50%) scale(1.4) rotate(20deg); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1) rotate(40deg); opacity: 0; }
+    }
+
+    .dmg-number {
+      position: absolute;
+      pointer-events: none;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 14px;
+      font-weight: bold;
+      color: #ff3838;
+      text-shadow: 2px 2px 0 #000;
+      animation: popUp 0.65s ease-out forwards;
+      z-index: 25;
+    }
+    @keyframes popUp {
+      0% { transform: translateY(0) scale(0.8); opacity: 1; }
+      100% { transform: translateY(-45px) scale(1.3); opacity: 0; }
+    }
+
+    /* DİYALOG BALONU */
+    .dialog-bubble {
+      background: #fff4d4;
+      border: 3px solid #8e2b0e;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 19px;
+      color: #4a1908;
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      box-shadow: inset 0 0 0 2px #e59952;
+      line-height: 1.3;
+    }
+
+    /* K.O. PANELİ */
+    .ko-overlay {
+      display: none;
+      background: rgba(26, 15, 13, 0.95);
+      border: 4px solid #2ed573;
+      border-radius: 12px;
+      padding: 16px;
+      position: absolute;
+      inset: 12px;
+      z-index: 50;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff4d4;
+      animation: koPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes koPop {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .ko-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 16px;
+      color: #2ed573;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 0 #000;
+    }
+    .ko-text {
+      font-size: 19px;
+      line-height: 1.35;
+      margin-bottom: 14px;
+      color: #f1f2f6;
+    }
+    .reset-btn {
+      background: #2ed573;
+      border: 3px solid #1a7a40;
+      color: #0b381a;
+      font-family: 'VT323', monospace;
+      font-size: 20px;
+      padding: 6px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .footer-note {
+      font-size: 15px;
+      color: #7a3014;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="game-box">
+    <div class="header-title">🥊 HÜSEYİN'İ PATAKLA V2 🥊</div>
+    <div class="sub-title">Birikmiş bütün darlama ve trip hasarını çıkarma ringi</div>
+
+    <!-- CAN BARI -->
+    <div class="hp-container">
+      <div class="hp-header">
+        <span>HÜSEYİN HP:</span>
+        <span id="hp-text">1000 / 1000</span>
+      </div>
+      <div class="hp-bar-bg">
+        <div class="hp-bar-fill" id="hp-bar"></div>
+      </div>
+    </div>
+
+    <!-- SİLAHLAR -->
+    <div class="weapon-title">Saldırı Aletini Seç:</div>
+    <div class="weapon-grid">
+      <div class="weapon-btn active" onclick="setWeapon('boxing', '🥊', 25, 'punch', this)">
+        <span class="weapon-icon">🥊</span>
+        <span class="weapon-name">Eldiven (-25)</span>
+      </div>
+      <div class="weapon-btn" onclick="setWeapon('slipper', '🩴', 50, 'slap', this)">
+        <span class="weapon-icon">🩴</span>
+        <span class="weapon-name">Terlik (-50)</span>
+      </div>
+      <div class="weapon-btn" onclick="setWeapon('pan', '🍳', 100, 'metal', this)">
+        <span class="weapon-icon">🍳</span>
+        <span class="weapon-name">Tava (-100)</span>
+      </div>
+      <div class="weapon-btn" onclick="setWeapon('pin', '🥖', 200, 'wood', this)">
+        <span class="weapon-icon">🥖</span>
+        <span class="weapon-name">Oklava (-200)</span>
+      </div>
+    </div>
+
+    <!-- VURMA ARENASI -->
+    <div class="arena" id="arena" onclick="strikeTarget(event)">
+      <div class="avatar-wrapper" id="avatarWrapper">
+        <img id="huseyinImg" class="avatar-img" src="huseyin.jpg" alt="Hüseyin">
+      </div>
+    </div>
+
+    <!-- DİYALOG ALANI -->
+    <div class="dialog-bubble" id="dialogText">
+      "Vur aşkım acıma... Gereksiz kuruntularımın, darlamalarımın cezasını çekmeye hazırım!"
+    </div>
+
+    <div class="footer-note">
+      * Her vuruşta ekstra rahatlama ve huzur buff'ı kazanırsınız.
+    </div>
+
+    <!-- K.O. BAYILMA EKRANI -->
+    <div class="ko-overlay" id="koScreen">
+      <div style="font-size: 38px; margin-bottom: 6px;">🕊️😵🩹</div>
+      <div class="ko-title">K.O. - HÜSEYİN YERE SERİLDİ!</div>
+      <div class="ko-text">
+        İçindeki bütün negatif enerji sıfırlandı! Hüseyin akıllandı, savunma modunu ebediyen sandığa kilitledi. Cumartesi Konya'da kahveler ve tüm hesaplar Hüseyin'e ait!
+      </div>
+      <button class="reset-btn" onclick="reviveHuseyin()">YENİDEN CANLANDIR (BİRAZ DAHA DÖV) 🔄</button>
+    </div>
+  </div>
+
+  <script>
+    let maxHp = 1000;
+    let currentHp = 1000;
+    let currentDamage = 25;
+    let currentIcon = '🥊';
+    let currentSoundType = 'punch';
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playWeaponSound(type) {
+      try {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        const now = audioCtx.currentTime;
+
+        if (type === 'punch') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(140, now);
+          osc.frequency.exponentialRampToValueAtTime(35, now + 0.1);
+          gain.gain.setValueAtTime(0.5, now);
+          gain.gain.linearRampToValueAtTime(0, now + 0.12);
+          osc.start(now);
+          osc.stop(now + 0.12);
+        } else if (type === 'slap') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(450, now);
+          osc.frequency.exponentialRampToValueAtTime(80, now + 0.08);
+          gain.gain.setValueAtTime(0.4, now);
+          gain.gain.linearRampToValueAtTime(0, now + 0.09);
+          osc.start(now);
+          osc.stop(now + 0.09);
+        } else if (type === 'metal') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(750, now);
+          osc.frequency.setValueAtTime(920, now + 0.04);
+          osc.exponentialRampToValueAtTime(200, now + 0.35);
+          gain.gain.setValueAtTime(0.35, now);
+          gain.gain.linearRampToValueAtTime(0, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'wood') {
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(200, now);
+          osc.frequency.exponentialRampToValueAtTime(50, now + 0.15);
+          gain.gain.setValueAtTime(0.3, now);
+          gain.gain.linearRampToValueAtTime(0, now + 0.15);
+          osc.start(now);
+          osc.stop(now + 0.15);
+        }
+      } catch (e) {}
+    }
+
+    function setWeapon(type, icon, dmg, sound, element) {
+      currentIcon = icon;
+      currentDamage = dmg;
+      currentSoundType = sound;
+      document.querySelectorAll('.weapon-btn').forEach(b => b.classList.remove('active'));
+      element.classList.add('active');
+    }
+
+    const linesHealthy = [
+      "Ah! Haklısın, darlamayacaktım!",
+      "Vur balım vur, hak ettim valla!",
+      "O terlik nereden çıktı!",
+      "Tamam söz, bir daha kafanı şişirmicem!"
+    ];
+
+    const linesHurt = [
+      "tava kafamda çınladı resmen!",
+      "Oklavayla mı vurdun az önce sen?!",
+      "Cumartesi Konya'ya morluklarla gelicem galiba!",
+      "Sanırım nakavt olucam!"
+    ];
+
+    const linesCritical = [
+      "Gözüm kararıyor balım... Hakkını helal et...",
+      "Darladığım her saniyenin bedelini ödedim!",
+      "Kafamda Stardew tavukları uçuşuyor şu an...",
+      "Tamam teslim oluyorum, beyaz bayrak çektim!"
+    ];
+
+    function strikeTarget(event) {
+      if (currentHp <= 0) return;
+
+      playWeaponSound(currentSoundType);
+
+      currentHp = Math.max(0, currentHp - currentDamage);
+      const hpPercent = (currentHp / maxHp) * 100;
+
+      const hpBar = document.getElementById('hp-bar');
+      hpBar.style.width = hpPercent + '%';
+      document.getElementById('hp-text').innerText = `${currentHp} / ${maxHp}`;
+
+      if (hpPercent < 30) {
+        hpBar.style.background = '#ff4757';
+      } else if (hpPercent < 60) {
+        hpBar.style.background = '#ffa502';
+      }
+
+      const wrapper = document.getElementById('avatarWrapper');
+      wrapper.classList.remove('shake-hard');
+      void wrapper.offsetWidth;
+      wrapper.classList.add('shake-hard');
+
+      const img = document.getElementById('huseyinImg');
+      const hurtLevel = 100 - hpPercent;
+      img.style.filter = `sepia(${hurtLevel * 0.4}%) hue-rotate(${hurtLevel * 1.8}deg) saturate(${100 + hurtLevel * 2}%) contrast(${100 + hurtLevel * 0.5}%)`;
+
+      const arena = document.getElementById('arena');
+      const rect = arena.getBoundingClientRect();
+      const clickX = event.clientX - rect.left;
+      const clickY = event.clientY - rect.top;
+
+      const hitMark = document.createElement('div');
+      hitMark.className = 'hit-mark';
+      hitMark.innerText = currentIcon;
+      hitMark.style.left = clickX + 'px';
+      hitMark.style.top = clickY + 'px';
+      arena.appendChild(hitMark);
+      setTimeout(() => hitMark.remove(), 450);
+
+      const dmgNum = document.createElement('div');
+      dmgNum.className = 'dmg-number';
+      dmgNum.innerText = `-${currentDamage}`;
+      dmgNum.style.left = (clickX - 10) + 'px';
+      dmgNum.style.top = (clickY - 20) + 'px';
+      arena.appendChild(dmgNum);
+      setTimeout(() => dmgNum.remove(), 600);
+
+      let pool = linesHealthy;
+      if (hpPercent < 35) pool = linesCritical;
+      else if (hpPercent < 70) pool = linesHurt;
+
+      const randomLine = pool[Math.floor(Math.random() * pool.length)];
+      document.getElementById('dialogText').innerText = `"${randomLine}"`;
+
+      if (currentHp <= 0) {
+        setTimeout(() => {
+          document.getElementById('koScreen').style.display = 'flex';
+        }, 350);
+      }
+    }
+
+    function reviveHuseyin() {
+      currentHp = maxHp;
+      document.getElementById('hp-bar').style.width = '100%';
+      document.getElementById('hp-bar').style.background = 'linear-gradient(90deg, #ff4757, #2ed573)';
+      document.getElementById('hp-text').innerText = `${maxHp} / ${maxHp}`;
+      document.getElementById('huseyinImg').style.filter = 'none';
+      document.getElementById('dialogText').innerText = '"Yenilendim ama lütfen oklavayı yavaşça yere bırak..."';
+      document.getElementById('koScreen').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
